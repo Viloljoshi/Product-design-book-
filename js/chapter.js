@@ -4,12 +4,15 @@
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const n = Math.max(0, parseInt(new URLSearchParams(location.search).get('c') || '0', 10));
 
-  const [book, quiz] = await Promise.all([
-    fetch('data/chapters.json').then((r) => r.json()),
-    fetch('data/quiz.json').then((r) => r.json()),
+  const V = '?v=9';
+  const [book, quiz, quick] = await Promise.all([
+    fetch('data/chapters.json' + V).then((r) => r.json()),
+    fetch('data/quiz.json' + V).then((r) => r.json()),
+    fetch('data/quick.json' + V).then((r) => r.json()).catch(() => []),
   ]);
   const ch = book.chapters.find((c) => c.n === n) || book.chapters[0];
   const q = quiz.find((x) => x.n === ch.n);
+  const qk = quick.find((x) => x.n === ch.n);
   const part = book.parts.find((p) => p.id === ch.part);
 
   /* accent = part color */
@@ -62,7 +65,12 @@
         </div>
       </div>
     </header>
-    ${ch.tldr ? `<div class="tldr"><div class="tldr-card glass"><b>TL;DR</b><p>${ch.tldr}</p></div></div>` : ''}
+    ${ch.tldr || qk ? `<div class="tldr"><div class="tldr-card glass">
+      <div class="qt-head"><b>The quick take</b><span class="qt-time">60-second version</span></div>
+      ${ch.tldr ? `<p>${ch.tldr}</p>` : ''}
+      ${qk ? `<p class="qt-do">${qk.take}</p>` : ''}
+      ${q ? `<span class="qt-concept">Concept: ${q.concept}</span>` : ''}
+    </div></div>` : ''}
     <div class="ch-body">${body}</div>`;
 
   /* reveal (IO + scroll fallback so content can never stay hidden) */

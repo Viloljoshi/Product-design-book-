@@ -22,6 +22,20 @@
     document.head.appendChild(s);
   }
 
+  /* ── floating nav: tuck away scrolling down, glide back scrolling up ── */
+  const nav = document.getElementById('topnav');
+  if (nav) {
+    let lastY = scrollY, acc = 0;
+    addEventListener('scroll', () => {
+      const y = scrollY, dy = y - lastY; lastY = y;
+      if ((dy > 0) !== (acc > 0)) acc = 0;       // direction change resets
+      acc += dy;
+      if (y < 90) { nav.classList.remove('tucked'); return; }
+      if (acc > 140) nav.classList.add('tucked');
+      else if (acc < -60) nav.classList.remove('tucked');
+    }, { passive: true });
+  }
+
   /* ── cursor ── */
   if (!fine) return;
   document.body.insertAdjacentHTML('beforeend', `
