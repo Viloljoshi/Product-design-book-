@@ -9,7 +9,7 @@ const Hero = (() => {
 
   const isMobile = matchMedia('(max-width: 760px)').matches;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  video.src = (isMobile ? 'assets/hero-mobile.mp4' : 'assets/hero.mp4') + '?v=9';
+  video.src = (isMobile ? 'assets/hero-mobile.mp4' : 'assets/hero.mp4') + '?v=10';
 
   const texts = [...document.querySelectorAll('.scroll-text')];
   const markers = [...document.querySelectorAll('.marker')];

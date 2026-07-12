@@ -4,11 +4,12 @@
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const n = Math.max(0, parseInt(new URLSearchParams(location.search).get('c') || '0', 10));
 
-  const V = '?v=9';
-  const [book, quiz, quick] = await Promise.all([
+  const V = '?v=10';
+  const [book, quiz, quick, notes] = await Promise.all([
     fetch('data/chapters.json' + V).then((r) => r.json()),
     fetch('data/quiz.json' + V).then((r) => r.json()),
     fetch('data/quick.json' + V).then((r) => r.json()).catch(() => []),
+    fetch('data/notes.json' + V).then((r) => r.json()).catch(() => []),
   ]);
   const ch = book.chapters.find((c) => c.n === n) || book.chapters[0];
   const q = quiz.find((x) => x.n === ch.n);
@@ -28,24 +29,47 @@
   updateXp();
   document.addEventListener('pdp:xp', updateXp);
 
-  /* words → read time */
-  const words = ch.sections.flatMap((s) => s.ps).reduce((a, p) => a + (p.html || (p.items || []).join(' ') || '').split(' ').length, 0);
-  const mins = Math.max(3, Math.round(words / 220));
-
   /* ── render ── */
   const art = ch.image ? `assets/art/${ch.image.replace('.png', '.webp')}` : 'assets/art/cover.webp';
   const titleWords = ch.title.split(' ').map((w, i) =>
     `<span class="wd" style="animation-delay:${120 + i * 90}ms">${w}</span>`).join(' ');
 
+  /* original chapter on the author's site */
+  const authorSlug = ch.title.toLowerCase().replace(/[’'‘]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  const authorUrl = `https://productdesignpsychology.com/${String(ch.n).padStart(2, '0')}-${authorSlug}/`;
+
+  /* field notes: structured PM-style learnings instead of the book text */
+  const nt = notes.find((x) => x.n === ch.n);
   let body = '';
-  for (const sec of ch.sections) {
-    if (sec.h) body += `<h2 class="rv">${sec.h}</h2>`;
-    for (const p of sec.ps) {
-      if (p.t === 'quote') body += `<blockquote class="ch-quote rv"><p>${p.html}</p>${p.cite ? `<cite>${p.cite}</cite>` : ''}</blockquote>`;
-      else if (p.t === 'list') body += `<ul class="rv">${p.items.map((i) => `<li>${i}</li>`).join('')}</ul>`;
-      else body += `<p class="rv">${p.html}</p>`;
-    }
+  if (nt) {
+    body = `
+      <section class="fn rv"><span class="fn-num">01</span>
+        <h2>What I took away</h2><p class="fn-learned">${nt.learned}</p></section>
+      <section class="fn rv"><span class="fn-num">02</span>
+        <h2>Put it to work</h2>
+        <ol class="fn-apply">${nt.apply.map((a) => `<li>${a}</li>`).join('')}</ol></section>
+      <section class="fn rv"><span class="fn-num">03</span>
+        <h2>Reach for this when</h2>
+        <div class="fn-when">${nt.when.map((w) => `<span class="fn-chip">${w}</span>`).join('')}</div></section>
+      <section class="fn rv"><span class="fn-num">04</span>
+        <h2>Red flags it's happening</h2>
+        <ul class="fn-flags">${nt.flags.map((f) => `<li>${f}</li>`).join('')}</ul></section>
+      <section class="fn fn-q rv"><span class="fn-num">05</span>
+        <h2>The question to ask in the room</h2>
+        <blockquote class="fn-question">“${nt.question}”</blockquote></section>`;
   }
+
+  /* beautiful CTA to the original chapter */
+  body += `
+    <aside class="author-cta rv">
+      <div class="ac-glow" aria-hidden="true"></div>
+      <p class="ac-kicker">These are field notes, not the book</p>
+      <h3>Read the full chapter,<br><em>as Wouter wrote it.</em></h3>
+      <p class="ac-sub">The stories, the studies, the craft of the argument. Our notes are the map; the chapter is the territory.</p>
+      <a class="ac-btn" href="${authorUrl}" target="_blank" rel="noopener">
+        Read “${ch.title}” on productdesignpsychology.com <span class="ac-arrow">↗</span>
+      </a>
+    </aside>`;
 
   $('#chapter-root').innerHTML = `
     <header class="ch-hero">
@@ -58,7 +82,7 @@
         <h1>${titleWords}</h1>
         ${ch.subtitle ? `<p class="ch-sub">${ch.subtitle}</p>` : ''}
         <div class="ch-meta">
-          <span>${mins} min read</span>
+          <span>4 min field notes</span>
           <span>${ch.refs.length} sources</span>
           ${q ? `<span>Concept · ${q.concept}</span>` : ''}
           ${Gamify.isRead(ch.n) ? '<span style="color:var(--p2)">✓ read</span>' : ''}
