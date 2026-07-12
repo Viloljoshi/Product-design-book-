@@ -38,7 +38,8 @@ const Hero = (() => {
       const c = TINTS[active] || TINTS[0];
       tint.style.background = `radial-gradient(ellipse at 30% 60%, rgba(${c},0.12), transparent 65%)`;
     }
-    if (!reduced) video.style.transform = `translateZ(0) scale(${1.03 + p * 0.09}) translateY(${p * -22}px)`;
+    /* translate-only parallax: never scales the video, so it stays pixel-sharp */
+    if (!reduced) video.style.transform = `translateZ(0) translateY(${p * 26}px)`;
   };
 
   let raf = 0;

@@ -20,7 +20,7 @@ npx http-server -p 8317
 
 | Piece | What it does |
 |---|---|
-| `index.html` | Sharp autoplaying cinematic hero video (seamless 1600x900 boomerang loop, GPU-composited), library of all 41 chapters, 3D Research Vault, Bias Match game |
+| `index.html` | Sharp autoplaying cinematic hero video (seamless 2304x1296 denoised+sharpened boomerang loop, GPU-composited), library of all 41 chapters, 3D Research Vault, Bias Match game |
 | `chapter.html?c=N` | Chapter reader with animated hero, TL;DR card, pull quotes, 3D tilt/flip research-paper cards linking to every original study, and a scenario recall quiz |
 | `js/gamify.js` | XP, five levels (Curious Mind → Mind Reader), daily streaks, part-completion badges · persisted in `localStorage` |
 | `js/hero.js` | Autoplay video hero + immediate header reveal, scroll-keyed beats, parallax |
