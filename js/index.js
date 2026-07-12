@@ -36,8 +36,8 @@
 
   /* ── data ── */
   const [book, quiz] = await Promise.all([
-    fetch('data/chapters.json?v=10').then((r) => r.json()),
-    fetch('data/quiz.json?v=10').then((r) => r.json()),
+    fetch('data/chapters.json?v=11').then((r) => r.json()),
+    fetch('data/quiz.json?v=11').then((r) => r.json()),
   ]);
   const conceptOf = Object.fromEntries(quiz.map((q) => [q.n, q.concept]));
   const scenarioOf = Object.fromEntries(quiz.map((q) => [q.n, q.scenario]));

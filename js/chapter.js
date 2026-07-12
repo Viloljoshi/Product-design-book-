@@ -4,7 +4,7 @@
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const n = Math.max(0, parseInt(new URLSearchParams(location.search).get('c') || '0', 10));
 
-  const V = '?v=10';
+  const V = '?v=11';
   const [book, quiz, quick, notes] = await Promise.all([
     fetch('data/chapters.json' + V).then((r) => r.json()),
     fetch('data/quiz.json' + V).then((r) => r.json()),
