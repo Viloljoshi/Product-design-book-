@@ -1,9 +1,9 @@
 /* Scroll-driven frame engine with dwell remapping (Apple-style scroll film) */
 const Hero = (() => {
   const FRAME_COUNT = 160;
-  const LERP = 0.1;
-  const DWELL_WIDTH = 0.055;
-  const DWELL_PEAK = 2.0;
+  const LERP = 0.09;
+  const DWELL_WIDTH = 0.06;
+  const DWELL_PEAK = 1.7;
   const REMAP_N = 1600;
 
   const section = document.getElementById('hero-scroll');
@@ -122,15 +122,38 @@ const Hero = (() => {
     }
   };
 
+  /* ── gentle autoplay: after the first scroll, the film keeps playing
+     itself while the pointer is idle, so a single scroll carries you
+     through. Any wheel/touch/key instantly takes back control. ── */
+  const AUTOPLAY_SECONDS = 15;
+  let hasScrolled = false, lastInput = 0, travelPx = 1, prevT = 0;
+  const measure = () => { travelPx = Math.max(1, section.offsetHeight - innerHeight); };
+  measure();
+  addEventListener('resize', measure);
+  ['wheel', 'touchstart', 'touchmove', 'keydown', 'pointerdown'].forEach((ev) =>
+    addEventListener(ev, () => { hasScrolled = true; lastInput = performance.now(); }, { passive: true }));
+
   let cur = 0, target = 0, running = false;
-  const loop = () => {
+  const loop = (t) => {
+    const now = t || performance.now();
+    const dt = prevT ? Math.min(0.05, (now - prevT) / 1000) : 0;
+    prevT = now;
     const raw = progress();
-    target = remap(raw) * (FRAME_COUNT - 1);
+
+    /* autoplay advance while idle and still inside the hero */
+    if (hasScrolled && !reduced && raw > 0 && raw < 0.995 && document.visibilityState === 'visible'
+        && now - lastInput > 1400) {
+      const dy = (travelPx / AUTOPLAY_SECONDS) * dt;
+      if (window.__lenis) window.__lenis.scrollTo(scrollY + dy, { immediate: true, force: true });
+      else scrollTo(0, scrollY + dy);
+    }
+
+    target = remap(progress()) * (FRAME_COUNT - 1);
     /* frame-rate-independent smoothing so it feels identical on 60/120Hz */
     cur += (target - cur) * LERP;
     if (Math.abs(target - cur) < 0.004) cur = target;
     drawBlend(cur);
-    updateOverlays(raw);
+    updateOverlays(progress());
     requestAnimationFrame(loop);
   };
 
