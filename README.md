@@ -20,10 +20,10 @@ npx http-server -p 8317
 
 | Piece | What it does |
 |---|---|
-| `index.html` | Scroll-driven hero film (160 AI-upscaled 2K frames on canvas with dwell pacing), library of all 41 chapters, 3D Research Vault, Bias Match game |
+| `index.html` | Smooth autoplaying cinematic hero video (seamless boomerang loop, GPU-decoded), library of all 41 chapters, 3D Research Vault, Bias Match game |
 | `chapter.html?c=N` | Chapter reader with animated hero, TL;DR card, pull quotes, 3D tilt/flip research-paper cards linking to every original study, and a scenario recall quiz |
 | `js/gamify.js` | XP, five levels (Curious Mind → Mind Reader), daily streaks, part-completion badges · persisted in `localStorage` |
-| `js/hero.js` | Scroll→frame engine with Gaussian dwell remapping (scroll slows at story beats) |
+| `js/hero.js` | Video hero + scroll-keyed text beats, chapter markers, tint and parallax |
 | `data/chapters.json` | Full book parsed chapter-wise: sections, quotes, references with URLs |
 | `data/quiz.json` | 40 psychology concepts + real-world product scenarios |
 
