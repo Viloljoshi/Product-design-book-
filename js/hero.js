@@ -1,9 +1,9 @@
 /* Scroll-driven frame engine with dwell remapping (Apple-style scroll film) */
 const Hero = (() => {
-  const FRAME_COUNT = 121;
-  const LERP = 0.085;
-  const DWELL_WIDTH = 0.045;
-  const DWELL_PEAK = 3.4;
+  const FRAME_COUNT = 160;
+  const LERP = 0.14;
+  const DWELL_WIDTH = 0.05;
+  const DWELL_PEAK = 2.2;
   const REMAP_N = 1600;
 
   const section = document.getElementById('hero-scroll');
@@ -67,6 +67,8 @@ const Hero = (() => {
     const dpr = Math.min(devicePixelRatio || 1, 2);
     canvas.width = innerWidth * dpr;
     canvas.height = innerHeight * dpr;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
   };
   fit();
   addEventListener('resize', fit);

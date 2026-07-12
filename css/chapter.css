@@ -76,6 +76,13 @@ body { background: var(--ink); }
   cursor: pointer;
 }
 .pcard-front::after { content: ''; position: absolute; inset: 0; border-radius: var(--radius); background: linear-gradient(120deg, transparent 32%, rgba(245,241,234,0.055) 48%, transparent 60%); pointer-events: none; }
+.pc-glare { position: absolute; inset: 0; border-radius: var(--radius); pointer-events: none; z-index: 2; }
+.pcard:not(.flipped):not(:hover) { animation: cardFloat 5.5s ease-in-out infinite; }
+.pcard:nth-child(2n) { animation-delay: -1.8s; }
+.pcard:nth-child(3n) { animation-delay: -3.4s; }
+@keyframes cardFloat { 50% { transform: translateY(-7px) rotateY(-2deg); } }
+.pcard:hover { z-index: 3; }
+.pcard.flipped .pcard-back { box-shadow: 0 26px 70px rgba(0,0,0,0.6), 0 0 34px var(--accent-soft); }
 .pc-year { font-family: var(--heading); font-style: italic; font-size: 36px; line-height: 1; color: var(--accent); }
 .pc-title { font-size: 13.5px; line-height: 1.55; margin-top: 14px; font-weight: 400; display: -webkit-box; -webkit-line-clamp: 7; -webkit-box-orient: vertical; overflow: hidden; }
 .pc-flip { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--line-soft); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }

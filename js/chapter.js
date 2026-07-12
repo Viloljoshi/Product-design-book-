@@ -19,7 +19,7 @@
   rs.setProperty('--accent-glow', `var(--${ACC}-glow)`);
   rs.setProperty('--accent-soft', `var(--${ACC}-soft)`);
 
-  document.title = `${ch.title} — Product Design Psychology`;
+  document.title = `${ch.title} · Product Design Psychology`;
   $('#ch-pos').textContent = ch.n === 0 ? 'Introduction' : `Chapter ${String(ch.n).padStart(2, '0')} / 40`;
   const updateXp = () => { $('#ch-xp').textContent = `✦ ${Gamify.state.xp} XP · ${Gamify.level().name}`; };
   updateXp();
@@ -65,17 +65,24 @@
     ${ch.tldr ? `<div class="tldr"><div class="tldr-card glass"><b>TL;DR</b><p>${ch.tldr}</p></div></div>` : ''}
     <div class="ch-body">${body}</div>`;
 
-  /* reveal */
+  /* reveal (IO + scroll fallback so content can never stay hidden) */
   const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && e.target.classList.add('in')), { threshold: 0.08 });
   $$('.rv').forEach((el) => io.observe(el));
+  const revealSweep = () => {
+    const vh = innerHeight || document.documentElement.clientHeight || 900;
+    $$('.rv:not(.in)').forEach((el) => { if (el.getBoundingClientRect().top < vh * 1.05) el.classList.add('in'); });
+  };
+  addEventListener('scroll', revealSweep, { passive: true });
+  setTimeout(revealSweep, 800);
 
   /* ── research cards ── */
   if (ch.refs.length) {
     $('#research').hidden = false;
     $('#res-grid').innerHTML = ch.refs.map((r, i) => `
-      <div class="pcard rv" tabindex="0" role="button" aria-label="Research: ${r.title}">
+      <div class="pcard rv" style="transition-delay:${i * 70}ms" tabindex="0" role="button" aria-label="Research: ${r.title}">
         <div class="pcard-face pcard-front">
-          <span class="pc-year">${r.year || '—'}</span>
+          <span class="pc-glare"></span>
+          <span class="pc-year">${r.year || '···'}</span>
           <p class="pc-title">${r.title}</p>
           <span class="pc-flip">Tap to flip ⟲</span>
         </div>
@@ -86,13 +93,19 @@
         </div>
       </div>`).join('');
     $$('.pcard', $('#res-grid')).forEach((card) => {
+      io.observe(card);
+      const glare = $('.pc-glare', card);
       card.addEventListener('mousemove', (e) => {
         if (card.classList.contains('flipped')) return;
         const r = card.getBoundingClientRect();
         const x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
-        card.style.transform = `rotateY(${x * 14}deg) rotateX(${-y * 12}deg) translateZ(12px)`;
+        card.style.transform = `rotateY(${x * 18}deg) rotateX(${-y * 15}deg) translateZ(22px) scale(1.03)`;
+        if (glare) glare.style.background = `radial-gradient(circle at ${(x + 0.5) * 100}% ${(y + 0.5) * 100}%, rgba(245,241,234,0.16), transparent 55%)`;
       });
-      card.addEventListener('mouseleave', () => { if (!card.classList.contains('flipped')) card.style.transform = ''; });
+      card.addEventListener('mouseleave', () => {
+        if (!card.classList.contains('flipped')) card.style.transform = '';
+        if (glare) glare.style.background = 'none';
+      });
       card.addEventListener('click', (e) => {
         const open = e.target.closest('.pc-open');
         if (open) { Gamify.paperOpened(open.dataset.url); $(`[data-o="${open.dataset.o}"].pc-opened`, card).textContent = '✓ opened'; return; }
@@ -111,17 +124,17 @@
     const opts = [q.concept, ...others].sort(() => Math.random() - 0.5);
     let tries = 0, done = Gamify.quizDone(ch.n);
     const resEl = $('#quiz-result');
-    if (done) resEl.textContent = 'Concept already mastered ★ — replaying is free recall practice.';
+    if (done) resEl.textContent = 'Concept already mastered ★. Replaying is free recall practice.';
     $('#quiz-opts').innerHTML = opts.map((o) => `<button class="quiz-opt">${o}</button>`).join('');
     $$('.quiz-opt').forEach((btn) => btn.addEventListener('click', () => {
       if (btn.textContent === q.concept) {
         $$('.quiz-opt').forEach((b) => { b.disabled = true; });
         btn.classList.add('correct');
         if (!done) { Gamify.quizResult(ch.n, tries === 0); done = true; }
-        resEl.textContent = tries === 0 ? 'First try. That concept is yours now.' : 'Got there — the misses are how it sticks.';
+        resEl.textContent = tries === 0 ? 'First try. That concept is yours now.' : 'Got there. The misses are how it sticks.';
       } else {
         tries++; btn.classList.add('wrong'); btn.disabled = true;
-        resEl.textContent = 'Not that one — feel the difference, then try again.';
+        resEl.textContent = 'Not that one. Feel the difference, then try again.';
       }
     }));
   }
@@ -135,7 +148,7 @@
   } else {
     $('#next-nav').hidden = false;
     $('#next-link').href = 'index.html#arena';
-    $('#next-title').textContent = 'You finished the book — enter the Recall Arena';
+    $('#next-title').textContent = 'You finished the book. Enter the Recall Arena';
   }
 
   /* ── read progress + completion ── */

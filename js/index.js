@@ -3,24 +3,6 @@
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
-  /* ── custom cursor ── */
-  const dot = $('#cursor-dot'), ring = $('#cursor-ring');
-  if (matchMedia('(hover: hover)').matches) {
-    let rx = 0, ry = 0, tx = 0, ty = 0;
-    addEventListener('mousemove', (e) => {
-      tx = e.clientX; ty = e.clientY;
-      dot.style.transform = `translate(${tx - 3}px, ${ty - 3}px)`;
-      const hot = e.target.closest('a, button, .pcard, .chip, .slotcard');
-      ring.classList.toggle('hot', !!hot);
-    });
-    (function trail() {
-      rx += (tx - rx) * 0.16; ry += (ty - ry) * 0.16;
-      const s = ring.classList.contains('hot') ? 29 : 18;
-      ring.style.transform = `translate(${rx - s}px, ${ry - s}px)`;
-      requestAnimationFrame(trail);
-    })();
-  }
-
   /* ── ambient particles ── */
   const pc = $('#particles');
   if (pc && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -100,7 +82,7 @@
     <div class="part-block rv">
       <a class="chap-card" href="chapter.html?c=0" style="max-width:560px;flex-direction:row;display:flex">
         <div class="cc-body"><span class="cc-num">PREFACE ${Gamify.isRead(0) ? '<span class="cc-state">✓</span>' : ''}</span>
-        <h4>Introduction — why design <em>is</em> psychology</h4>
+        <h4>Introduction: why design <em>is</em> psychology</h4>
         <span class="cc-concept">Start here · 4 min</span></div>
       </a>
     </div>` : '';
@@ -132,9 +114,15 @@
   root.innerHTML = html;
   refreshHud();
 
-  /* ── reveal observer ── */
+  /* ── reveal observer + scroll fallback ── */
   const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && e.target.classList.add('in')), { threshold: 0.12 });
   $$('.rv').forEach((el) => io.observe(el));
+  const revealSweep = () => {
+    const vh = innerHeight || document.documentElement.clientHeight || 900;
+    $$('.rv:not(.in)').forEach((el) => { if (el.getBoundingClientRect().top < vh * 1.05) el.classList.add('in'); });
+  };
+  addEventListener('scroll', revealSweep, { passive: true });
+  setTimeout(revealSweep, 800);
 
   /* ── research vault: pick 1 flagship paper per chapter ── */
   const stage = $('#vault-stage');
@@ -145,7 +133,7 @@
     const flag = c.refs.find((r) => r.year && r.url) || c.refs[0];
     if (flag && c.n > 0) papers.push({ ...flag, ch: c.n, chTitle: c.title, part: c.part, concept: conceptOf[c.n] });
   }
-  $('#vault-count').textContent = `${total} sources across 41 chapters — here are 40 landmark studies, one per concept.`;
+  $('#vault-count').textContent = `${total} sources across 41 chapters. Here are 40 landmark studies, one per concept.`;
   stage.innerHTML = papers.map((p, i) => `
     <div class="pcard vc${p.part}" data-i="${i}" tabindex="0" role="button" aria-label="Research card: ${p.title}">
       <div class="pcard-face pcard-front">
