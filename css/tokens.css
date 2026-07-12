@@ -1,0 +1,126 @@
+/* ── Product Design Psychology · design tokens ─────────────────────── */
+:root {
+  /* surfaces */
+  --ink: #0c0a0f;
+  --ink-2: #120f16;
+  --charcoal: #1a1620;
+  --surface: rgba(245, 241, 234, 0.035);
+  --surface-hover: rgba(245, 241, 234, 0.07);
+  --line: rgba(245, 241, 234, 0.09);
+  --line-soft: rgba(245, 241, 234, 0.055);
+
+  /* text */
+  --warm-white: #f5f1ea;
+  --warm-dim: #c9c2b6;
+  --muted: #97909f;
+  --faint: #6a6472;
+
+  /* the four minds — part accent system */
+  --p1: #a78bfa;  --p1-glow: rgba(167, 139, 250, 0.35);  --p1-soft: rgba(167, 139, 250, 0.09);
+  --p2: #3ed6c5;  --p2-glow: rgba(62, 214, 197, 0.32);   --p2-soft: rgba(62, 214, 197, 0.09);
+  --p3: #fb7185;  --p3-glow: rgba(251, 113, 133, 0.32);  --p3-soft: rgba(251, 113, 133, 0.09);
+  --p4: #f0b35c;  --p4-glow: rgba(240, 179, 92, 0.32);   --p4-soft: rgba(240, 179, 92, 0.10);
+
+  --accent: var(--p1);
+  --accent-glow: var(--p1-glow);
+  --accent-soft: var(--p1-soft);
+
+  --grad-spectrum: linear-gradient(100deg, #a78bfa 0%, #fb7185 34%, #f0b35c 66%, #3ed6c5 100%);
+
+  /* type */
+  --heading: 'Playfair Display', 'Georgia', serif;
+  --body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --text-hero: clamp(44px, 6.2vw, 92px);
+  --text-h2: clamp(30px, 3.6vw, 52px);
+  --text-h3: clamp(21px, 2.2vw, 28px);
+  --text-body: clamp(15px, 1.06vw, 17.5px);
+  --label: 500 9px/1 var(--body);
+
+  /* rhythm */
+  --space-section: clamp(4.5rem, 3rem + 6vw, 11rem);
+  --gutter: clamp(20px, 5vw, 72px);
+  --radius: 18px;
+  --radius-sm: 12px;
+
+  /* motion */
+  --fast: 160ms;
+  --normal: 320ms;
+  --slow: 700ms;
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.45, 0.5, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--ink);
+  color: var(--warm-white);
+  font-family: var(--body);
+  font-weight: 300;
+  font-size: var(--text-body);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+::selection { background: var(--accent-glow); color: #fff; }
+a { color: inherit; }
+img { max-width: 100%; display: block; }
+button { font-family: var(--body); cursor: pointer; }
+
+/* labels */
+.overline {
+  font: var(--label);
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex; align-items: center; gap: 14px;
+}
+.overline::before { content: ''; width: 34px; height: 1px; background: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
+
+/* glass */
+.glass {
+  background: var(--surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+}
+
+/* film grain + vignette overlays */
+.grain {
+  position: fixed; inset: 0; z-index: 100; pointer-events: none; opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  background-size: 256px;
+}
+.vignette {
+  position: fixed; inset: 0; z-index: 99; pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 52%, rgba(8, 7, 10, 0.5) 100%);
+}
+
+/* XP toast */
+.xp-toast {
+  position: fixed; right: 26px; bottom: 26px; z-index: 500;
+  display: flex; align-items: center; gap: 10px;
+  padding: 13px 20px; border-radius: 100px;
+  background: rgba(18, 15, 22, 0.92);
+  border: 1px solid var(--accent-glow);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 24px var(--accent-soft);
+  backdrop-filter: blur(14px);
+  font-weight: 500; font-size: 13.5px; letter-spacing: 0.02em;
+  transform: translateY(90px); opacity: 0;
+  transition: transform var(--normal) var(--ease-spring), opacity var(--normal) ease;
+}
+.xp-toast.show { transform: translateY(0); opacity: 1; }
+.xp-toast .orb {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--grad-spectrum);
+  box-shadow: 0 0 14px var(--accent-glow);
+  font-size: 11px; display: grid; place-items: center; color: #0c0a0f; font-weight: 700;
+}
+
+/* focus + reduced motion */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  html { scroll-behavior: auto; }
+}

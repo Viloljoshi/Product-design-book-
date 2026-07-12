@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Design Psychology</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Playfair+Display:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/chapter.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+</head>
+<body>
+
+<div class="grain"></div>
+<div class="vignette"></div>
+<div class="read-progress"><span id="read-fill"></span></div>
+
+<nav id="topnav" aria-label="Chapter navigation">
+  <a class="back" href="index.html#library">← Library</a>
+  <span class="ch-pos" id="ch-pos"></span>
+  <span class="ch-xp" id="ch-xp"></span>
+</nav>
+
+<article id="chapter-root" aria-live="polite">
+  <div class="ch-loading">Opening chapter…</div>
+</article>
+
+<section id="research" hidden aria-labelledby="research-title">
+  <div class="res-inner">
+    <p class="overline">The evidence</p>
+    <h2 id="research-title">Read the <em>research</em> itself</h2>
+    <p class="res-sub">Every claim in this chapter traces back to a source. Tilt, flip, deep-dive. Opening a paper earns +5 XP.</p>
+    <div class="res-grid" id="res-grid"></div>
+  </div>
+</section>
+
+<section id="quiz" hidden aria-labelledby="quiz-title">
+  <div class="quiz-inner glass">
+    <p class="overline">Prove the concept</p>
+    <h2 id="quiz-title">Would you catch it in the wild?</h2>
+    <p class="quiz-scenario" id="quiz-scenario"></p>
+    <div class="quiz-opts" id="quiz-opts"></div>
+    <p class="quiz-result" id="quiz-result"></p>
+  </div>
+</section>
+
+<nav id="next-nav" hidden>
+  <a id="next-link" class="next-card" href="#">
+    <div><span class="overline">Up next</span><h3 id="next-title"></h3></div>
+    <span class="next-arrow">→</span>
+  </a>
+</nav>
+
+<footer>
+  <p>Product Design <em>Psychology</em> · Wouter de Bres · Interactive learning edition</p>
+</footer>
+
+<script src="js/gamify.js"></script>
+<script src="js/chapter.js"></script>
+</body>
+</html>

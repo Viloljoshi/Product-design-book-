@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Design Psychology — An Animated Learning Experience</title>
+<meta name="description" content="Understand the minds you're designing for and the mind you're designing with. 41 chapters, 290+ research sources, one animated learning experience.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Playfair+Display:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/index.css">
+<link rel="preload" as="image" href="assets/frames/d-001.webp">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+</head>
+<body>
+
+<div class="grain"></div>
+<div class="vignette"></div>
+<canvas id="particles" aria-hidden="true"></canvas>
+<div id="cursor-dot" aria-hidden="true"></div>
+<div id="cursor-ring" aria-hidden="true"></div>
+
+<!-- Loader -->
+<div id="loader" role="status" aria-label="Loading">
+  <div class="loader-mark">Product Design<br><em>Psychology</em></div>
+  <div class="loader-bar"><span id="loader-fill"></span></div>
+  <div class="loader-pct" id="loader-pct">0%</div>
+</div>
+
+<!-- Top nav -->
+<nav id="topnav" aria-label="Main navigation">
+  <a class="brand" href="#top">PDP<span>.</span></a>
+  <div class="nav-right">
+    <div class="nav-progress" title="Your learning progress">
+      <svg viewBox="0 0 36 36" class="ring"><circle cx="18" cy="18" r="15.5" class="ring-bg"/><circle cx="18" cy="18" r="15.5" class="ring-fg" id="nav-ring"/></svg>
+      <span id="nav-level">Curious Mind</span>
+    </div>
+    <a href="#library" class="nav-cta">Start learning</a>
+  </div>
+</nav>
+
+<!-- Chapter markers -->
+<div class="markers" aria-hidden="true">
+  <span class="marker active"></span><span class="marker"></span><span class="marker"></span>
+  <span class="marker"></span><span class="marker"></span><span class="marker"></span>
+</div>
+
+<!-- ═══ Scroll film hero ═══ -->
+<section id="hero-scroll" aria-label="Introduction">
+  <div class="canvas-hold">
+    <canvas id="hero-canvas"></canvas>
+    <div class="canvas-grad-left"></div>
+    <div class="canvas-grad-bottom"></div>
+    <div id="hero-tint"></div>
+  </div>
+
+  <div class="scroll-text st-hero" data-show-at="0" data-hide-at="0.13">
+    <p class="overline">An animated learning experience</p>
+    <h1 data-split>Product Design Psychology</h1>
+    <p class="hero-sub">Understand the minds you're designing <em>for</em> — and the mind you're designing <em>with</em>. By <a href="https://productdesignpsychology.com/wouter-de-bres/" target="_blank" rel="noopener">Wouter de Bres</a>.</p>
+    <div class="stat-bar glass">
+      <div class="stat"><b data-count="41">0</b><i>chapters</i></div>
+      <div class="stat"><b data-count="4">0</b><i>minds</i></div>
+      <div class="stat"><b data-count="290">0</b><i>research sources</i></div>
+      <div class="stat"><b data-count="40">0</b><i>concepts to master</i></div>
+    </div>
+    <div class="scroll-hint">Scroll to begin<span class="hint-line"></span></div>
+  </div>
+
+  <div class="scroll-text st-quote" data-show-at="0.16" data-hide-at="0.31">
+    <span class="qmark">“</span>
+    <blockquote>You cannot understand good design if you don't understand people; design is only made <em>for people</em>.</blockquote>
+    <div class="q-divider"></div>
+    <cite>Dieter Rams</cite>
+  </div>
+
+  <div class="scroll-text st-claim" data-show-at="0.34" data-hide-at="0.49">
+    <p class="overline">The premise</p>
+    <h2>Every design decision is a <em>claim</em> about how a person thinks.</h2>
+    <ul class="claim-list">
+      <li>Where you put a button is a claim about where people look.</li>
+      <li>An empty state is a claim about what people need when lost.</li>
+      <li>A progress bar is a claim about how effort is experienced.</li>
+    </ul>
+  </div>
+
+  <div class="scroll-text st-parts" data-show-at="0.52" data-hide-at="0.67">
+    <p class="overline">Four minds</p>
+    <h2>One book. Four <em>minds</em> to master.</h2>
+    <div class="minds-grid">
+      <div class="mind glass m1"><b>01</b><h3>The Designer's Mind</h3><p>Your own psychology shapes what you make.</p></div>
+      <div class="mind glass m2"><b>02</b><h3>Minding the Design</h3><p>Interface mechanics shape perception.</p></div>
+      <div class="mind glass m3"><b>03</b><h3>The User's Mind</h3><p>What users bring before they ever touch it.</p></div>
+      <div class="mind glass m4"><b>04</b><h3>The Organization's Mind</h3><p>The system you work in shapes what ships.</p></div>
+    </div>
+  </div>
+
+  <div class="scroll-text st-learn" data-show-at="0.70" data-hide-at="0.85">
+    <p class="overline">Built to be learned, not just read</p>
+    <h2>Read it. <em>Play</em> it. Prove it.</h2>
+    <ul class="learn-list">
+      <li><span class="li-orb o1">✦</span><div><b>Earn XP &amp; levels</b><p>Every chapter read, every concept recalled — from Curious Mind to Mind Reader.</p></div></li>
+      <li><span class="li-orb o2">◈</span><div><b>The Research Vault</b><p>Every claim links to its original paper — in interactive 3D.</p></div></li>
+      <li><span class="li-orb o3">◎</span><div><b>Bias Match</b><p>A recall game that pins each of the 40 concepts to a real product moment.</p></div></li>
+    </ul>
+  </div>
+
+  <div class="scroll-text st-cta" data-show-at="0.88" data-hide-at="1">
+    <h2><em>Forty</em> ways your brain betrays your designs.</h2>
+    <p class="cta-sub">Start with the introduction, or jump into any mind.</p>
+    <div class="cta-row">
+      <a class="btn-primary" href="chapter.html?c=0">Begin the introduction</a>
+      <a class="btn-ghost" href="#library">Browse all chapters</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Library ═══ -->
+<main id="library">
+  <header class="lib-head">
+    <p class="overline">The library</p>
+    <h2 class="lib-title">Choose your <em>mind</em></h2>
+    <div class="lib-progress glass" id="lib-progress"></div>
+  </header>
+  <div id="parts-root"><!-- parts + chapter cards injected --></div>
+</main>
+
+<!-- ═══ Research Vault ═══ -->
+<section id="vault" aria-labelledby="vault-title">
+  <video class="vault-bg" src="assets/vault-loop.mp4" autoplay muted loop playsinline aria-hidden="true"></video>
+  <div class="vault-scrim"></div>
+  <div class="vault-inner">
+    <p class="overline">The research vault</p>
+    <h2 id="vault-title">Every claim has a <em>paper</em> behind it.</h2>
+    <p class="vault-sub">Drag through the vault. Tilt a card, flip it, open the original study. <span id="vault-count"></span></p>
+    <div class="vault-stage" id="vault-stage"><!-- 3D cards injected --></div>
+    <p class="vault-hint">↔ drag to explore · click a card to flip · open the paper for +5 XP</p>
+  </div>
+</section>
+
+<!-- ═══ Bias Match game ═══ -->
+<section id="arena" aria-labelledby="arena-title">
+  <div class="arena-inner">
+    <p class="overline">The recall arena</p>
+    <h2 id="arena-title">Bias <em>Match</em></h2>
+    <p class="arena-sub">Match each psychological concept to the product moment it explains. Six pairs per round.</p>
+    <div class="arena-hud glass">
+      <span id="arena-score">0 matched</span><span id="arena-streak"></span>
+      <button id="arena-new" class="btn-ghost small">New round</button>
+    </div>
+    <div class="arena-board" id="arena-board"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-brand">Product Design <em>Psychology</em></div>
+  <p>Written by Wouter de Bres · <a href="https://productdesignpsychology.com" target="_blank" rel="noopener">productdesignpsychology.com</a> · Interactive learning edition</p>
+</footer>
+
+<script src="js/gamify.js"></script>
+<script src="js/hero.js"></script>
+<script src="js/index.js"></script>
+</body>
+</html>
