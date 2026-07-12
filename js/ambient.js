@@ -8,7 +8,7 @@
     const s = document.createElement('script');
     s.src = 'https://unpkg.com/lenis@1.1.18/dist/lenis.min.js';
     s.onload = () => {
-      const lenis = new Lenis({ lerp: 0.105, wheelMultiplier: 1.05, smoothWheel: true });
+      const lenis = new Lenis({ lerp: 0.085, wheelMultiplier: 1, smoothWheel: true, syncTouch: false });
       window.__lenis = lenis;
       const raf = (t) => { lenis.raf(t); requestAnimationFrame(raf); };
       requestAnimationFrame(raf);

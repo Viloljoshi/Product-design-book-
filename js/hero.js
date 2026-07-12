@@ -1,9 +1,9 @@
 /* Scroll-driven frame engine with dwell remapping (Apple-style scroll film) */
 const Hero = (() => {
   const FRAME_COUNT = 160;
-  const LERP = 0.14;
-  const DWELL_WIDTH = 0.05;
-  const DWELL_PEAK = 2.2;
+  const LERP = 0.1;
+  const DWELL_WIDTH = 0.055;
+  const DWELL_PEAK = 2.0;
   const REMAP_N = 1600;
 
   const section = document.getElementById('hero-scroll');
@@ -73,14 +73,30 @@ const Hero = (() => {
   fit();
   addEventListener('resize', fit);
 
-  const draw = (i) => {
-    const f = nearest(i);
+  const paint = (f, alpha) => {
     if (!f) return;
     const cw = canvas.width, ch = canvas.height;
-    const fw = f.width, fh = f.height;
-    const s = Math.max(cw / fw, ch / fh);
-    const w = fw * s, h = fh * s;
+    const s = Math.max(cw / f.width, ch / f.height);
+    const w = f.width * s, h = f.height * s;
+    ctx.globalAlpha = alpha;
     ctx.drawImage(f, (cw - w) / 2, (ch - h) / 2, w, h);
+  };
+
+  /* single frame (index is 1-based) */
+  const draw = (i) => { paint(nearest(i), 1); ctx.globalAlpha = 1; };
+
+  /* sub-frame cross-fade: dissolve the next frame over the current one so
+     160 discrete frames read as continuous motion */
+  const drawBlend = (curFloat) => {
+    const lo = Math.floor(curFloat);
+    const t = curFloat - lo;
+    const fLo = nearest(lo + 1);
+    paint(fLo, 1);
+    if (t > 0.001) {
+      const fHi = nearest(lo + 2);
+      if (fHi && fHi !== fLo) paint(fHi, t);
+    }
+    ctx.globalAlpha = 1;
   };
 
   const progress = () => {
@@ -108,12 +124,13 @@ const Hero = (() => {
 
   let cur = 0, target = 0, running = false;
   const loop = () => {
-    const p = remap(progress());
-    target = p * (FRAME_COUNT - 1);
+    const raw = progress();
+    target = remap(raw) * (FRAME_COUNT - 1);
+    /* frame-rate-independent smoothing so it feels identical on 60/120Hz */
     cur += (target - cur) * LERP;
-    if (Math.abs(target - cur) < 0.01) cur = target;
-    draw(Math.round(cur) + 1);
-    updateOverlays(progress());
+    if (Math.abs(target - cur) < 0.004) cur = target;
+    drawBlend(cur);
+    updateOverlays(raw);
     requestAnimationFrame(loop);
   };
 
