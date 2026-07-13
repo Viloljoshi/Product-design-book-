@@ -4,7 +4,7 @@
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const n = Math.max(0, parseInt(new URLSearchParams(location.search).get('c') || '0', 10));
 
-  const V = '?v=11';
+  const V = '?v=12';
   const [book, quiz, quick, notes] = await Promise.all([
     fetch('data/chapters.json' + V).then((r) => r.json()),
     fetch('data/quiz.json' + V).then((r) => r.json()),
@@ -25,9 +25,6 @@
 
   document.title = `${ch.title} · Product Design Psychology`;
   $('#ch-pos').textContent = ch.n === 0 ? 'Introduction' : `Chapter ${String(ch.n).padStart(2, '0')} / 40`;
-  const updateXp = () => { $('#ch-xp').textContent = `✦ ${Gamify.state.xp} XP · ${Gamify.level().name}`; };
-  updateXp();
-  document.addEventListener('pdp:xp', updateXp);
 
   /* ── render ── */
   const art = ch.image ? `assets/art/${ch.image.replace('.png', '.webp')}` : 'assets/art/cover.webp';
@@ -85,7 +82,7 @@
           <span>4 min field notes</span>
           <span>${ch.refs.length} sources</span>
           ${q ? `<span>Concept · ${q.concept}</span>` : ''}
-          ${Gamify.isRead(ch.n) ? '<span style="color:var(--p2)">✓ read</span>' : ''}
+          ${Progress.isRead(ch.n) ? '<span style="color:var(--p2)">✓ read</span>' : ''}
         </div>
       </div>
     </header>
@@ -120,8 +117,7 @@
         </div>
         <div class="pcard-face pcard-back">
           <p class="pc-venue">${r.venue || 'Original source'}</p>
-          <span class="pc-opened" data-o="${i}">${Gamify.state.papers[r.url] ? '✓ opened' : ''}</span>
-          ${r.url ? `<a class="pc-open" href="${r.url}" target="_blank" rel="noopener" data-url="${r.url}" data-o="${i}">Read the paper ↗</a>` : ''}
+          ${r.url ? `<a class="pc-open" href="${r.url}" target="_blank" rel="noopener">Read the paper ↗</a>` : ''}
         </div>
       </div>`).join('');
     $$('.pcard', $('#res-grid')).forEach((card) => {
@@ -139,8 +135,7 @@
         if (glare) glare.style.background = 'none';
       });
       card.addEventListener('click', (e) => {
-        const open = e.target.closest('.pc-open');
-        if (open) { Gamify.paperOpened(open.dataset.url); $(`[data-o="${open.dataset.o}"].pc-opened`, card).textContent = '✓ opened'; return; }
+        if (e.target.closest('.pc-open')) return;
         card.classList.toggle('flipped'); card.style.transform = '';
       });
       card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.classList.toggle('flipped'); } });
@@ -154,15 +149,13 @@
     $('#quiz-scenario').textContent = `“${q.scenario}”`;
     const others = quiz.filter((x) => x.n !== q.n).sort(() => Math.random() - 0.5).slice(0, 3).map((x) => x.concept);
     const opts = [q.concept, ...others].sort(() => Math.random() - 0.5);
-    let tries = 0, done = Gamify.quizDone(ch.n);
+    let tries = 0;
     const resEl = $('#quiz-result');
-    if (done) resEl.textContent = 'Concept already mastered ★. Replaying is free recall practice.';
     $('#quiz-opts').innerHTML = opts.map((o) => `<button class="quiz-opt">${o}</button>`).join('');
     $$('.quiz-opt').forEach((btn) => btn.addEventListener('click', () => {
       if (btn.textContent === q.concept) {
         $$('.quiz-opt').forEach((b) => { b.disabled = true; });
         btn.classList.add('correct');
-        if (!done) { Gamify.quizResult(ch.n, tries === 0); done = true; }
         resEl.textContent = tries === 0 ? 'First try. That concept is yours now.' : 'Got there. The misses are how it sticks.';
       } else {
         tries++; btn.classList.add('wrong'); btn.disabled = true;
@@ -179,21 +172,20 @@
     $('#next-title').textContent = `${String(next.n).padStart(2, '0')} · ${next.title}`;
   } else {
     $('#next-nav').hidden = false;
-    $('#next-link').href = 'index.html#arena';
-    $('#next-title').textContent = 'You finished the book. Enter the Recall Arena';
+    $('#next-link').href = 'index.html#library';
+    $('#next-title').textContent = 'You finished the book. Back to the library';
   }
 
   /* ── read progress + completion ── */
   const fill = $('#read-fill');
-  let marked = Gamify.isRead(ch.n);
+  let marked = Progress.isRead(ch.n);
   addEventListener('scroll', () => {
     const h = document.documentElement;
     const p = h.scrollTop / (h.scrollHeight - h.clientHeight);
     fill.style.width = `${p * 100}%`;
     if (!marked && p > 0.86) {
       marked = true;
-      Gamify.markRead(ch.n);
-      if (part) Gamify.checkPartBadge(part.id, part.chapters, part.title);
+      Progress.markRead(ch.n);
     }
   }, { passive: true });
 })();

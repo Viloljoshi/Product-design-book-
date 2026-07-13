@@ -1,4 +1,4 @@
-/* Landing: boot, ambient, library render, research vault, bias match */
+/* Landing: boot, ambient, library render, research vault */
 (async () => {
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -36,11 +36,10 @@
 
   /* ── data ── */
   const [book, quiz] = await Promise.all([
-    fetch('data/chapters.json?v=11').then((r) => r.json()),
-    fetch('data/quiz.json?v=11').then((r) => r.json()),
+    fetch('data/chapters.json?v=12').then((r) => r.json()),
+    fetch('data/quiz.json?v=12').then((r) => r.json()),
   ]);
   const conceptOf = Object.fromEntries(quiz.map((q) => [q.n, q.concept]));
-  const scenarioOf = Object.fromEntries(quiz.map((q) => [q.n, q.scenario]));
 
   /* ── loader + hero boot ── */
   const fill = $('#loader-fill'), pct = $('#loader-pct'), loader = $('#loader');
@@ -58,21 +57,11 @@
     });
   });
 
-  /* ── nav progress ring + level ── */
+  /* ── reading progress (plain count, no scoring) ── */
   const refreshHud = () => {
-    const lv = Gamify.level();
-    const ringEl = $('#nav-ring');
-    ringEl.style.strokeDashoffset = 97.4 * (1 - lv.pct);
-    $('#nav-level').textContent = lv.name;
-    const st = Gamify.state;
-    $('#lib-progress').innerHTML = `
-      <span class="lvl"><b>${lv.name}</b><span class="lvl-bar"><span style="width:${lv.pct * 100}%"></span></span>${lv.next ? `${st.xp}/${lv.next.xp} XP` : `${st.xp} XP`}</span>
-      <span><b>${Gamify.readCount()}</b>/41 read</span>
-      <span><b>${Gamify.quizCount()}</b>/40 recalled</span>
-      ${st.streak > 1 ? `<span>🔥 <b>${st.streak}</b>-day streak</span>` : ''}
-      ${st.badges.map((b) => `<span class="badge-chip">${({ part1: "Designer's Mind", part2: 'Minding the Design', part3: "User's Mind", part4: "Organization's Mind" })[b]} ✓</span>`).join('')}`;
+    $('#lib-progress').innerHTML = `<span><b>${Progress.readCount()}</b>/41 read</span>`;
   };
-  document.addEventListener('pdp:xp', refreshHud);
+  document.addEventListener('pdp:progress', refreshHud);
 
   /* ── library render ── */
   const root = $('#parts-root');
@@ -81,7 +70,7 @@
   let html = intro ? `
     <div class="part-block rv">
       <a class="chap-card" href="chapter.html?c=0" style="max-width:560px;flex-direction:row;display:flex">
-        <div class="cc-body"><span class="cc-num">PREFACE ${Gamify.isRead(0) ? '<span class="cc-state">✓</span>' : ''}</span>
+        <div class="cc-body"><span class="cc-num">PREFACE ${Progress.isRead(0) ? '<span class="cc-state">✓</span>' : ''}</span>
         <h4>Introduction: why design <em>is</em> psychology</h4>
         <span class="cc-concept">Start here · 4 min</span></div>
       </a>
@@ -89,16 +78,16 @@
   for (const part of book.parts) {
     const items = part.chapters.map((n) => {
       const c = chaps.find((x) => x.n === n);
-      const done = Gamify.isRead(n), quizzed = Gamify.quizDone(n);
+      const done = Progress.isRead(n);
       return `<a class="chap-card rv ${done ? 'done' : ''}" href="chapter.html?c=${n}">
         <div class="cc-art"><img loading="lazy" src="assets/art/${c.image.replace('.png', '.webp')}" alt="" width="800" height="800"></div>
         <div class="cc-body">
-          <span class="cc-num">CH ${String(n).padStart(2, '0')} <span class="cc-state">${done ? '✓' : ''}${quizzed ? ' ★' : ''}</span></span>
+          <span class="cc-num">CH ${String(n).padStart(2, '0')} <span class="cc-state">${done ? '✓' : ''}</span></span>
           <h4>${c.title}</h4>
           <span class="cc-concept">${conceptOf[n] || ''}</span>
         </div></a>`;
     }).join('');
-    const doneCount = part.chapters.filter((n) => Gamify.isRead(n)).length;
+    const doneCount = part.chapters.filter((n) => Progress.isRead(n)).length;
     html += `<section class="part-block pa${part.id}" id="part${part.id}">
       <div class="part-hero rv">
         <img loading="lazy" src="assets/dividers/part${part.id}.webp" alt="" width="1200" height="670">
@@ -166,44 +155,9 @@
     card.addEventListener('mouseleave', () => { if (!card.classList.contains('flipped')) card.style.transform = ''; });
     card.addEventListener('click', (e) => {
       if (moved > 8) return;
-      if (e.target.closest('.pc-open')) { Gamify.paperOpened(e.target.closest('.pc-open').dataset.url); return; }
+      if (e.target.closest('.pc-open')) return;
       card.classList.toggle('flipped'); card.style.transform = '';
     });
     card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.classList.toggle('flipped'); } });
   });
-
-  /* ── bias match arena ── */
-  const board = $('#arena-board');
-  let sel = null, matched = 0, roundTotal = 0, totalMatched = 0;
-  const newRound = () => {
-    sel = null; matched = 0;
-    const pool = [...quiz].sort(() => Math.random() - 0.5).slice(0, 6);
-    roundTotal = pool.length;
-    const defs = [...pool].sort(() => Math.random() - 0.5);
-    board.innerHTML = `
-      <div class="ab-col">${pool.map((q) => `<button class="chip" data-n="${q.n}">${q.concept}</button>`).join('')}</div>
-      <div class="ab-col">${defs.map((q) => `<button class="slotcard" data-n="${q.n}">${q.scenario}</button>`).join('')}</div>`;
-    $$('.chip', board).forEach((ch) => ch.addEventListener('click', () => {
-      $$('.chip', board).forEach((c) => c.classList.remove('sel'));
-      ch.classList.add('sel'); sel = ch;
-    }));
-    $$('.slotcard', board).forEach((sc) => sc.addEventListener('click', () => {
-      if (!sel) { Gamify.toast('Pick a concept first'); return; }
-      if (sc.dataset.n === sel.dataset.n) {
-        sc.classList.add('locked'); sel.classList.add('locked'); sel.classList.remove('sel'); sel = null;
-        matched++; totalMatched++;
-        $('#arena-score').textContent = `${totalMatched} matched`;
-        if (matched === roundTotal) {
-          Gamify.matchScore(roundTotal);
-          $('#arena-streak').textContent = `Round clear! +${roundTotal * Gamify.XP.matchPair} XP`;
-          board.insertAdjacentHTML('beforeend', `<div class="arena-done">Beautiful. Your recall is compounding. <br><button class="btn-ghost small" onclick="document.getElementById('arena-new').click()" style="margin-top:14px">Play another round</button></div>`);
-        }
-      } else {
-        sc.classList.add('wrong');
-        setTimeout(() => sc.classList.remove('wrong'), 420);
-      }
-    }));
-  };
-  $('#arena-new').addEventListener('click', newRound);
-  newRound();
 })();

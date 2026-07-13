@@ -22,8 +22,7 @@ body { background: var(--ink); }
 #topnav.tucked { transform: translate(-50%, -92px); opacity: 0; pointer-events: none; }
 #topnav .back { text-decoration: none; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--warm-dim); transition: color var(--fast); }
 #topnav .back:hover { color: var(--warm-white); }
-.ch-pos { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
-.ch-xp { margin-left: auto; font-size: 11.5px; letter-spacing: 0.12em; color: var(--accent); }
+.ch-pos { margin-left: auto; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
 
 .ch-loading { min-height: 60vh; display: grid; place-items: center; color: var(--muted); font-style: italic; font-family: var(--heading); font-size: 20px; }
 
@@ -179,7 +178,6 @@ body { background: var(--ink); }
 .pc-venue { font-size: 12.5px; font-style: italic; color: var(--warm-dim); line-height: 1.6; }
 .pc-open { display: block; text-align: center; text-decoration: none; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 500; padding: 14px; border-radius: 100px; background: var(--grad-spectrum); color: #0c0a0f; transition: transform var(--normal) var(--ease-spring); }
 .pc-open:hover { transform: scale(1.03); }
-.pc-opened { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--p2); }
 
 /* quiz */
 #quiz { padding: var(--space-section) var(--gutter); }

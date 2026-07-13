@@ -139,27 +139,6 @@ button { font-family: var(--body); cursor: pointer; }
   background: radial-gradient(ellipse at center, transparent 52%, rgba(8, 7, 10, 0.5) 100%);
 }
 
-/* XP toast */
-.xp-toast {
-  position: fixed; right: 26px; bottom: 26px; z-index: 500;
-  display: flex; align-items: center; gap: 10px;
-  padding: 13px 20px; border-radius: 100px;
-  background: rgba(18, 15, 22, 0.92);
-  border: 1px solid var(--accent-glow);
-  box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 24px var(--accent-soft);
-  backdrop-filter: blur(14px);
-  font-weight: 500; font-size: 13.5px; letter-spacing: 0.02em;
-  transform: translateY(90px); opacity: 0;
-  transition: transform var(--normal) var(--ease-spring), opacity var(--normal) ease;
-}
-.xp-toast.show { transform: translateY(0); opacity: 1; }
-.xp-toast .orb {
-  width: 22px; height: 22px; border-radius: 50%;
-  background: var(--grad-spectrum);
-  box-shadow: 0 0 14px var(--accent-glow);
-  font-size: 11px; display: grid; place-items: center; color: #0c0a0f; font-weight: 700;
-}
-
 /* ── search: nav trigger + command palette ── */
 #search-btn {
   display: inline-flex; align-items: center; gap: 9px;

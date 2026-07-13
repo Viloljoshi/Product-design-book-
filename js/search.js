@@ -3,7 +3,7 @@
    Advanced: weighted multi-field scoring, problem-phrase synonyms,
    mind:N filter, keyboard-first (⌘K / "/" · ↑↓ · Enter · Esc). */
 (async () => {
-  const V = '?v=11';
+  const V = '?v=12';
   const $ = (s, r = document) => r.querySelector(s);
 
   let docs = null;

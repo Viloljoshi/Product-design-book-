@@ -8,10 +8,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Playfair+Display:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/tokens.css?v=11">
-<link rel="stylesheet" href="css/index.css?v=11">
-<link rel="preload" as="image" href="assets/hero-poster.webp?v=11">
-<link rel="preload" as="video" href="assets/hero.mp4?v=11" type="video/mp4">
+<link rel="stylesheet" href="css/tokens.css?v=12">
+<link rel="stylesheet" href="css/index.css?v=12">
+<link rel="preload" as="image" href="assets/hero-poster.webp?v=12">
+<link rel="preload" as="video" href="assets/hero.mp4?v=12" type="video/mp4">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
 </head>
 <body>
@@ -31,10 +31,6 @@
 <nav id="topnav" aria-label="Main navigation">
   <a class="brand" href="#top">PDP<span>.</span></a>
   <div class="nav-right">
-    <div class="nav-progress" title="Your learning progress">
-      <svg viewBox="0 0 36 36" class="ring"><circle cx="18" cy="18" r="15.5" class="ring-bg"/><circle cx="18" cy="18" r="15.5" class="ring-fg" id="nav-ring"/></svg>
-      <span id="nav-level">Curious Mind</span>
-    </div>
     <a href="#library" class="nav-cta">Start learning</a>
   </div>
 </nav>
@@ -48,7 +44,7 @@
 <!-- ═══ Scroll film hero ═══ -->
 <section id="hero-scroll" aria-label="Introduction">
   <div class="canvas-hold">
-    <video id="hero-video" poster="assets/hero-poster.webp?v=11" muted loop playsinline autoplay preload="auto" aria-hidden="true"></video>
+    <video id="hero-video" poster="assets/hero-poster.webp?v=12" muted loop playsinline autoplay preload="auto" aria-hidden="true"></video>
     <div class="canvas-grad-left"></div>
     <div class="canvas-grad-bottom"></div>
     <div id="hero-tint"></div>
@@ -97,11 +93,11 @@
 
   <div class="scroll-text st-learn" data-show-at="0.70" data-hide-at="0.85">
     <p class="overline">Built to be learned, not just read</p>
-    <h2>Read it. <em>Play</em> it. Prove it.</h2>
+    <h2>Read it. <em>Apply</em> it. Remember it.</h2>
     <ul class="learn-list">
-      <li><span class="li-orb o1">✦</span><div><b>Earn XP &amp; levels</b><p>Every chapter read, every concept recalled. Climb from Curious Mind to Mind Reader.</p></div></li>
+      <li><span class="li-orb o1">✦</span><div><b>Field notes, not fluff</b><p>Every chapter distilled into what to do, when, and the question to ask in the room.</p></div></li>
       <li><span class="li-orb o2">◈</span><div><b>The Research Vault</b><p>Every claim links to its original paper, in interactive 3D.</p></div></li>
-      <li><span class="li-orb o3">◎</span><div><b>Bias Match</b><p>A recall game that pins each of the 40 concepts to a real product moment.</p></div></li>
+      <li><span class="li-orb o3">◎</span><div><b>A quick self-check</b><p>One real scenario per chapter, so you know the concept actually landed.</p></div></li>
     </ul>
   </div>
 
@@ -134,21 +130,7 @@
     <h2 id="vault-title">Every claim has a <em>paper</em> behind it.</h2>
     <p class="vault-sub">Drag through the vault. Tilt a card, flip it, open the original study. <span id="vault-count"></span></p>
     <div class="vault-stage" id="vault-stage"><!-- 3D cards injected --></div>
-    <p class="vault-hint">↔ drag to explore · click a card to flip · open the paper for +5 XP</p>
-  </div>
-</section>
-
-<!-- ═══ Bias Match game ═══ -->
-<section id="arena" aria-labelledby="arena-title">
-  <div class="arena-inner">
-    <p class="overline">The recall arena</p>
-    <h2 id="arena-title">Bias <em>Match</em></h2>
-    <p class="arena-sub">Match each psychological concept to the product moment it explains. Six pairs per round.</p>
-    <div class="arena-hud glass">
-      <span id="arena-score">0 matched</span><span id="arena-streak"></span>
-      <button id="arena-new" class="btn-ghost small">New round</button>
-    </div>
-    <div class="arena-board" id="arena-board"></div>
+    <p class="vault-hint">↔ drag to explore · click a card to flip · opens the original study</p>
   </div>
 </section>
 
@@ -157,10 +139,10 @@
   <p>Written by Wouter de Bres · <a href="https://productdesignpsychology.com" target="_blank" rel="noopener">productdesignpsychology.com</a> · Interactive learning edition</p>
 </footer>
 
-<script src="js/ambient.js?v=11"></script>
-<script src="js/search.js?v=11" defer></script>
-<script src="js/gamify.js?v=11"></script>
-<script src="js/hero.js?v=11"></script>
-<script src="js/index.js?v=11"></script>
+<script src="js/ambient.js?v=12"></script>
+<script src="js/search.js?v=12" defer></script>
+<script src="js/progress.js?v=12"></script>
+<script src="js/hero.js?v=12"></script>
+<script src="js/index.js?v=12"></script>
 </body>
 </html>
